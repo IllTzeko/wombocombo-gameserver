@@ -20,6 +20,12 @@ inline bool handle_message(game::Room& room,
         return false;
     }
 
+    // ── Heartbeat ───────────────────────────────
+    if (type == "ping") {
+        room.send_to(player_id, {{"type", "pong"}});
+        return true;
+    }
+
     // ── Lobby messages ────────────────────────────
     if (type == "player_ready") {
         bool ready = msg.value("ready", false);
