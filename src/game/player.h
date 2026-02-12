@@ -8,12 +8,12 @@
 
 namespace game {
 
-// Simple 2D physics constants — tuned for a platformer feel
+// Simple 2D physics constants — must match the client's Phaser config
 namespace physics {
-    constexpr float MOVE_SPEED    = 200.0f;   // px/s
-    constexpr float JUMP_VELOCITY = -450.0f;  // px/s (negative = up)
-    constexpr float GRAVITY       = 900.0f;   // px/s²
-    constexpr float GROUND_Y      = 500.0f;   // ground level (y increases downward)
+    constexpr float MOVE_SPEED    = 220.0f;   // px/s — matches client PLAYER_SPEED
+    constexpr float JUMP_VELOCITY = -420.0f;  // px/s — matches client PLAYER_JUMP
+    constexpr float GRAVITY       = 800.0f;   // px/s² — matches client physics gravity
+    constexpr float GROUND_Y      = 688.0f;   // ground level — client arena ground tiles at y=704, player center at 704-16=688
     constexpr float MAP_WIDTH     = 1280.0f;
     constexpr float MAP_HEIGHT    = 720.0f;
 }
