@@ -293,9 +293,11 @@ void WebSocketServer::run() {
                     return;
                 }
 
-                // Send "connected" to the new player
+                // Send "connected" to the new player (include room state so frontend knows phase)
+                auto room_state_str = game::room_state_str(room->state());
                 room->send_to(data->player_id,
-                              network::make_connected(data->player_id, data->player_name, room->current_tick()));
+                              network::make_connected(data->player_id, data->player_name,
+                                                      room->current_tick(), room_state_str));
 
                 // Notify others
                 room->broadcast_except(data->player_id,
@@ -303,18 +305,20 @@ void WebSocketServer::run() {
 
                 // Send appropriate state based on room phase
                 if (room->state() == game::RoomState::PLAYING) {
-                    // Player reconnected during gameplay — send game state
+                    // Player reconnected during gameplay — send rejoin info (NOT game_start!)
+                    // The frontend should handle "game_rejoin" differently from "game_start"
+                    // and just resume receiving game_state without re-navigating
                     room->send_to(data->player_id, {
-                        {"type", "game_start"},
+                        {"type", "game_rejoin"},
+                        {"tick", room->current_tick()},
                         {"round", 1},
                         {"map_data", {
                             {"width", game::physics::MAP_WIDTH},
                             {"height", game::physics::MAP_HEIGHT},
                             {"ground_y", game::physics::GROUND_Y}
-                        }},
-                        {"spawn_points", nlohmann::json::array()}
+                        }}
                     });
-                    logger::info("sent game_start to reconnected player " + data->player_id);
+                    logger::info("sent game_rejoin to reconnected player " + data->player_id);
                 } else {
                     // Send lobby state to everyone
                     room->broadcast(room->lobby_state());

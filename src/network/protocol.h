@@ -35,12 +35,14 @@ inline nlohmann::json make_error(int code, const std::string& message) {
 // Build connected response
 inline nlohmann::json make_connected(const std::string& player_id,
                                       const std::string& player_name,
-                                      int server_tick) {
+                                      int server_tick,
+                                      const std::string& room_state = "waiting") {
     return {
         {"type", "connected"},
         {"player_id", player_id},
         {"player_name", player_name},
-        {"server_tick", server_tick}
+        {"server_tick", server_tick},
+        {"room_state", room_state}
     };
 }
 
